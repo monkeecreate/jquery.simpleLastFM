@@ -1,0 +1,47 @@
+<!DOCTYPE html> 
+<html lang="en"> 
+<head> 
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+	
+	<title>simpleLastFM | jQuery Last.FM Plugin</title>
+	
+	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.6/jquery.min.js" charset="utf-8"></script>
+	<script src="jquery.simpleLastFM.js" charset="utf-8"></script>
+
+	<script type="text/javascript">
+		$(function() {
+			$.simpleLastFM({
+				apikey: '', //Get it at http://www.last.fm/api/account
+				username: 'freak2532',
+				method: 'getRecentTracks', //Options: getRecentTracks, getTopAlbums, getTopArtists, getTopTracks, getLovedTracks, getWeeklyAlbumChart, getWeeklyArtistChart, getWeeklyTrackChart
+				limit: 5, //Max is 200
+				success: function(results) {
+					$(results).each(function() {
+						html = '<p>';
+						html += '<strong>Track</strong>: '+this.artist.name+' (mbid: '+this.artist.mbid+')<br />';
+						html += '<strong>Artist</strong>: '+this.name+'<br />';
+						html += '<strong>Album</strong>: '+this.album.name+' (mbid: '+this.album.mbid+')<br />';
+						html += '<strong>Link</strong>: <a href="'+this.link+'">'+this.link+'</a><br />';
+						html += '<strong>Streamable</strong>: '+this.streamable+'<br />';
+						html += '<strong>Images</strong>:<br />';
+						html += '<img src="'+this.image.extralarge+'"> <img src="'+this.image.large+'"> <img src="'+this.image.medium+'"> <img src="'+this.image.small+'">';
+						
+						html +='</p>';
+						
+						$("#recentTracks").append(html);
+					});
+				},
+				error: function(error) {
+					$("#recentTracks").html('<p>'+error+'</p>');
+				}
+			});
+		});
+	</script>
+</head>
+<body>
+	<h1>simpleLastFM | jQuery Plugin</h1>
+	<p>A simple jQuery plugin to display what you've been listening and scrobbling to Last.fm including recent tracks, top albums, weekly charts and plenty more.</p>
+	
+	<div id="recentTracks"></div>
+</body>
+</html>
