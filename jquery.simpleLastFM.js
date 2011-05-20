@@ -17,7 +17,7 @@
 			var options = $.extend({
 				apikey: '', //Get it at http://www.last.fm/api/account
 				username: '',
-				method: 'getRecentTracks', //Options: getRecentTracks, getTopAlbums, getTopArtists, getTopTracks, getLovedTracks, getWeeklyAlbumChart, getWeeklyArtistChart, getWeeklyTrackChart
+				method: 'getRecentTracks', //Options: getRecentTracks, getTopAlbums, getTopArtists, getTopTracks, getTopTags, getLovedTracks, getWeeklyAlbumChart, getWeeklyArtistChart, getWeeklyTrackChart, getPlaylists, getInfo
 				limit: 9, //Max is 200
 				success: function(response){},
 				error: function(message){}
@@ -37,9 +37,12 @@
 						
 			$.getJSON(
 				apiUrl,
-				function(data) {
-					if(data != null && data != '') {						
-						if(options.method == "getRecentTracks") {
+				function(data) {					
+					if(data != null && data != '') {
+						if(data.error) {
+							options.error('<strong>Error '+data.error+'</strong>: '+data.message);
+							return false;						
+						} else if(options.method == "getRecentTracks") {
 							var tracks = [];
 							
 							$(data.recenttracks.track).each(function() {								
@@ -234,6 +237,74 @@
 							});
 							
 							var data = tracks;
+						} else if(options.method == "getTopTags") {
+							var tags = [];
+							
+							$(data.toptags.tag).each(function() {
+								var tag = {
+									name: this.name,
+									count: this.count,
+									link: this.url
+								}
+								
+								tags[tags.length] = tag;
+							});
+							
+							var data = tags;
+						} else if(options.method == "getPlaylists") {
+							var playlists = [];
+							
+							$(data.playlists.playlist).each(function() {
+								var playlist = {
+									id: this.id,
+									name: this.title,
+									description: this.description,
+									date: this.date,
+									size: this.size,
+									duration: this.duration,
+									streamable: this.streamable,
+									creatorLink: this.creator,
+									link: this.url,
+									image: {
+										small: this.image[0]['#text'],
+										medium: this.image[1]['#text'],
+										large: this.image[2]['#text'],
+										extralarge: this.image[3]['#text']
+									}
+								}
+								
+								playlists[playlists.length] = playlist;
+							})
+							
+							var data = playlists;
+						} else if(options.method == "getInfo") {
+							var info = {
+								username: data.user.name,
+								name: data.user.realname,
+								image: {
+									small: data.user.image[0]['#text'],
+									medium: data.user.image[1]['#text'],
+									large: data.user.image[2]['#text'],
+									extralarge: data.user.image[3]['#text']
+								},
+								link: data.user.url,
+								id: data.user.id,
+								country: data.user.country,
+								age: data.user.age,
+								gender: data.user.gender,
+								subscriber: data.user.subscriber,
+								playcount: data.user.playcount,
+								playlists: data.user.playlists,
+								registered: {
+									time: data.user.registered['#text'],
+									unixtime: data.user.registered.unixtime
+								}
+							}
+							
+							var data = info;							
+						} else {
+							options.error("There was an error. Please try again.");
+							return false;
 						}
 						
 						options.success(data);
