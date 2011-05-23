@@ -4,6 +4,58 @@
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 	
 	<title>simpleLastFM | jQuery Last.FM Plugin</title>
+	
+	<style>
+	#lastfmProfile {
+		margin: 0 0 45px;
+		overflow: hidden;
+	}
+	
+	#lastfmProfile a:link, #lastfmProfile a:active, #lastfmProfile a:visited {
+		color: #0187C5;
+		text-decoration: none;
+	}
+	
+	#lastfmProfile a:hover {
+		text-decoration: underline;
+	}
+	
+	#lastfmProfile .avatar {
+		float: left;
+		position: relative;
+		margin: 0 10px 10px 0;
+	}
+	
+	#lastfmProfile .avatar img {
+		padding: 1px;
+		border: 1px solid #ccc;
+	}
+	
+	#lastfmProfile .avatar span {
+		background: #333;
+		position: absolute;
+		top: -3px;
+		left: -3px;
+		display: block;
+		width: 8px;
+		height: 8px;
+		padding: 0;
+		border: 2px solid #fff;
+	}
+	
+	#lastfmProfile h3 {
+		margin: 0 0 8px;
+	}
+	
+	#lastfmProfile .playCount span {
+		background: #555;
+		color: #fff;
+		margin: 0 1px 0 0;
+		padding: 2px 4px;
+		border-radius: 4px;
+		-moz-border-radius: 4px;
+	}	
+	</style>
 </head>
 <body>
 	<h1>simpleLastFM | jQuery Plugin</h1>
@@ -13,6 +65,7 @@
 	<div id="recentTracks"></div>
 	
 	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.6/jquery.min.js" charset="utf-8"></script>
+	<script src="https://github.com/davatron5000/Lettering.js/raw/06c5d72b9eb1139897322cd091562083a019a5a5/jquery.lettering.js"></script>
 	<script src="jquery.simpleLastFM.js" charset="utf-8"></script>
 	<script type="text/javascript">
 		$(function() {
@@ -21,21 +74,24 @@
 				username: 'freak2532',
 				method: 'getInfo', //Options: getRecentTracks, getTopAlbums, getTopArtists, getTopTracks, getTopTags, getLovedTracks, getWeeklyAlbumChart, getWeeklyArtistChart, getWeeklyTrackChart, getPlaylists, getInfo
 				success: function(results) {
-					html = '<h2>'+results.name+' ('+results.username+')</h2><p>';
-					html += '<strong>ID</strong>: '+results.id+'<br />';
-					html += '<strong>Link</strong>: <a href="'+results.link+'" title="'+results.username+'">'+results.link+'</a><br />';
-					html += '<strong>Country</strong>: '+results.country+'<br />';
-					html += '<strong>Age</strong>: '+results.age+'<br />';
-					html += '<strong>Gender</strong>: '+results.gender+'<br />';
-					html += '<strong>Subscriber</strong>: '+results.subscriber+'<br />';
-					html += '<strong>Play Count</strong>: '+results.playcount+'<br />';
-					html += '<strong>Playlists</strong>: '+results.playlists+'<br />';
-					html += '<strong>Registered on</strong>: '+results.registered.time+'<br />';
-					html += '<strong>Images</strong>:<br />';
-					html += '<img src="'+results.image.extralarge+'"> <img src="'+results.image.large+'"> <img src="'+results.image.medium+'"> <img src="'+results.image.small+'">';
-					html +='</p>';
+					//modifing some of the results
+					registeredAt = new Date(results.registered.time); //setting date object to use later
+					if(results.gender == "m") //converting gender abbr
+						gender = "Male";
+					else
+						gender = "Female";
+					
+					html = '<div class="avatar"><img src="'+results.image.large+'" alt="'+results.username+'">';
+					if(results.subscriber == 1)
+						html += '<span>&nbsp;</span>';
+					html += '</div>';
+					html += '<h3>'+results.username+'</h3>';
+					html += '<p>'+results.name+', '+results.age+', '+gender+', '+results.country+'</p>';
+					html += '<p><span class="playCount">'+results.playcount+'</span> plays since '+registeredAt.getMonth()+'/'+registeredAt.getDate()+'/'+registeredAt.getFullYear()+'</p>';
+					html += '<p><a href="'+results.link+'" title="'+results.username+' at Last.FM">View Last.FM Profile</a>';
 					
 					$("#lastfmProfile").html(html);
+					$(".playCount").lettering();
 				},
 				error: function(error) {
 					$("#lastfmProfile").html('<p>'+error+'</p>');
@@ -65,6 +121,8 @@
 					$("#recentTracks").html('<p>'+error+'</p>');
 				}
 			});
+			
+			
 		});
 	</script>
 </body>
