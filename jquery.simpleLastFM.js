@@ -8,7 +8,7 @@
  * Developed by James Fleeting <hello@jamesfleeting.com>
  * Another project from monkeeCreate <http://monkeecreate.com>
  *
- * Version 1.0 - Last updated: May 19 2011
+ * Version 1.0 - Last updated: June 08 2011
  */
 
 (function($) {
@@ -18,6 +18,7 @@
 				apikey: '', //Get it at http://www.last.fm/api/account
 				username: '',
 				method: 'getRecentTracks', //Options: getRecentTracks, getTopAlbums, getTopArtists, getTopTracks, getTopTags, getLovedTracks, getWeeklyAlbumChart, getWeeklyArtistChart, getWeeklyTrackChart, getPlaylists, getInfo
+				period: 'overall', //Options: overall, 7day, 3month, 6month, 12month
 				limit: 9, //Max is 200
 				success: function(response){},
 				error: function(message){}
@@ -33,7 +34,7 @@
 				return false;
 			}
 			
-			var apiUrl = 'http://ws.audioscrobbler.com/2.0/?method=user.'+options.method+'&user='+options.username+'&limit='+options.limit+'&api_key='+options.apikey+'&format=json&callback=?';
+			var apiUrl = 'http://ws.audioscrobbler.com/2.0/?method=user.'+options.method+'&user='+options.username+'&limit='+options.limit+'&period='+options.period+'&api_key='+options.apikey+'&format=json&callback=?';
 						
 			$.getJSON(
 				apiUrl,

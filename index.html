@@ -102,27 +102,26 @@
 				apikey: '', //Get it at http://www.last.fm/api/account
 				username: 'freak2532',
 				method: 'getRecentTracks', //Options: getRecentTracks, getTopAlbums, getTopArtists, getTopTracks, getTopTags, getLovedTracks, getWeeklyAlbumChart, getWeeklyArtistChart, getWeeklyTrackChart, getPlaylists, getInfo
+				period: 'overall', //Options: overall, 7day, 3month, 6month, 12month
 				limit: 7, //Max is 200
 				success: function(results) {
 					html = '<h2>Recent Tracks</h2>';
 					$(results).each(function() {
-						html += '<p><strong>Track</strong>: '+this.artist.name+' (mbid: '+this.artist.mbid+')<br />';
-						html += '<strong>Artist</strong>: '+this.name+'<br />';
+						html += '<p><strong>Artist</strong>: '+this.artist.name+' (mbid: '+this.artist.mbid+')<br />';
+						html += '<strong>Track</strong>: '+this.name+'<br />';
 						html += '<strong>Album</strong>: '+this.album.name+' (mbid: '+this.album.mbid+')<br />';
 						html += '<strong>Link</strong>: <a href="'+this.link+'">'+this.link+'</a><br />';
 						html += '<strong>Streamable</strong>: '+this.streamable+'<br />';
 						html += '<strong>Images</strong>:<br />';
 						html += '<img src="'+this.image.extralarge+'"> <img src="'+this.image.large+'"> <img src="'+this.image.medium+'"> <img src="'+this.image.small+'"></p>';
 					});
-					
+
 					$("#recentTracks").html(html);
 				},
 				error: function(error) {
 					$("#recentTracks").html('<p>'+error+'</p>');
 				}
 			});
-			
-			
 		});
 	</script>
 </body>
